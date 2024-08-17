@@ -1,4 +1,4 @@
-"""
+{/*
 Title: Quick SaaS Builder Landing Page
 Description: Landing page for the Quick SaaS Builder platform, introducing its key features and benefits.
 Status: In Progress
@@ -9,7 +9,7 @@ Last Updated: 2024-03-19
 Version: 1.0.0
 License: Proprietary - Confidential
 Confidentiality Notice: This file is proprietary and confidential. Unauthorized use, distribution, or reproduction is strictly prohibited.
-"""
+*/}
 
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
