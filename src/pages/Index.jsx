@@ -1,22 +1,14 @@
-{/*
-Title: Quick SaaS Builder Landing Page
-Description: Landing page for the Quick SaaS Builder platform, introducing its key features and benefits.
-Status: In Progress
-Tags: SaaS, No-Code, AI, Landing Page
-Author: GPT Engineer © 2024
-Date Created: 2024-03-19
-Last Updated: 2024-03-19
-Version: 1.0.0
-License: Proprietary - Confidential
-Confidentiality Notice: This file is proprietary and confidential. Unauthorized use, distribution, or reproduction is strictly prohibited.
-*/}
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Rocket, Code, Bot, Cloud } from "lucide-react";
 
 const Index = () => {
+  const handleGetStarted = () => {
+    // TODO: Implement get started functionality
+    console.log("Get Started clicked");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white p-4">
       <div className="max-w-4xl mx-auto">
@@ -49,7 +41,10 @@ const Index = () => {
         </div>
 
         <div className="text-center mt-12">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full text-lg">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full text-lg"
+            onClick={handleGetStarted}
+          >
             Get Started Now
           </Button>
         </div>
@@ -59,7 +54,7 @@ const Index = () => {
 };
 
 const FeatureCard = ({ icon, title, description }) => (
-  <Card>
+  <Card className="hover:shadow-lg transition-shadow duration-300">
     <CardHeader>
       <CardTitle className="flex items-center text-xl font-semibold">
         {icon}
