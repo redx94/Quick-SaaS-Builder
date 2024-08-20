@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Rocket, Code, Bot, Cloud } from "lucide-react";
+import { Rocket, Code, Bot, Cloud, CreditCard, Users, Megaphone } from "lucide-react";
+import ChatInterface from '../components/ChatInterface';
 
 const Index = () => {
+  const [showChat, setShowChat] = useState(false);
+
   const handleGetStarted = () => {
-    // TODO: Implement get started functionality
-    console.log("Get Started clicked");
+    setShowChat(true);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white p-4">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-blue-800 mb-4">Quick SaaS Builder</h1>
-          <p className="text-xl text-gray-600">Create, deploy, and manage high-profit SaaS applications without writing any code.</p>
+          <h1 className="text-4xl font-bold text-blue-800 mb-4">Advanced SaaS Builder</h1>
+          <p className="text-xl text-gray-600">Create, deploy, and manage comprehensive SaaS applications with our AI-powered platform.</p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
             icon={<Bot className="h-8 w-8 text-blue-500" />}
             title="AI-Powered Chat Interface"
@@ -25,18 +27,28 @@ const Index = () => {
           />
           <FeatureCard
             icon={<Code className="h-8 w-8 text-green-500" />}
-            title="No-Code SaaS Builder"
-            description="Drag-and-drop interface with pre-built templates for easy customization of your SaaS application."
+            title="Full-Stack SaaS Builder"
+            description="Build both frontend and backend with our intuitive interface and pre-built templates."
           />
           <FeatureCard
             icon={<Cloud className="h-8 w-8 text-purple-500" />}
-            title="Automated Infrastructure"
-            description="Seamless setup of cloud infrastructure, Kubernetes orchestration, and CI/CD pipelines."
+            title="Comprehensive Infrastructure"
+            description="Automated setup of cloud infrastructure, APIs, databases, and CI/CD pipelines."
           />
           <FeatureCard
-            icon={<Rocket className="h-8 w-8 text-red-500" />}
-            title="One-Click Deployment"
-            description="Deploy your SaaS application with a single click, including DNS setup and SSL configuration."
+            icon={<CreditCard className="h-8 w-8 text-red-500" />}
+            title="Integrated Payment Systems"
+            description="Seamlessly handle transactions with built-in payment portals and financial management tools."
+          />
+          <FeatureCard
+            icon={<Users className="h-8 w-8 text-yellow-500" />}
+            title="User Account Management"
+            description="Robust user authentication, authorization, and profile management systems."
+          />
+          <FeatureCard
+            icon={<Megaphone className="h-8 w-8 text-indigo-500" />}
+            title="Marketing & Customer Engagement"
+            description="Built-in tools for marketing, advertising, and managing customer interactions."
           />
         </div>
 
@@ -48,6 +60,8 @@ const Index = () => {
             Get Started Now
           </Button>
         </div>
+
+        {showChat && <ChatInterface />}
       </div>
     </div>
   );
