@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getAIResponse } from '../utils/aiResponses';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -11,10 +12,10 @@ const ChatInterface = () => {
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: 'user' }]);
-      // Simulate AI response
+      const aiResponse = getAIResponse(input);
       setTimeout(() => {
         setMessages(prev => [...prev, { 
-          text: "Thank you for your message. How can I assist you with building your SaaS product today?", 
+          text: aiResponse, 
           sender: 'ai' 
         }]);
       }, 1000);
