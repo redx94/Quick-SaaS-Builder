@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Rocket, Code, Bot, Cloud, CreditCard, Users, Megaphone } from "lucide-react";
-import BrainstormChat from '../components/BrainstormChat';
+import ChatInterface from '../components/ChatInterface';
 
 const Index = () => {
   const [showChat, setShowChat] = useState(false);
@@ -22,33 +22,33 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
             icon={<Bot className="h-8 w-8 text-blue-500" />}
-            title="AI-Powered Brainstorming"
-            description="Our intelligent AI guides you through ideation and planning for your perfect SaaS product."
+            title="AI-Powered Chat Interface"
+            description="Our intelligent AI guides you through the entire process, from idea generation to deployment."
           />
           <FeatureCard
             icon={<Code className="h-8 w-8 text-green-500" />}
-            title="Comprehensive SaaS Planning"
-            description="Cover all aspects of your SaaS, from backend to marketing, ensuring no detail is overlooked."
+            title="Full-Stack SaaS Builder"
+            description="Build both frontend and backend with our intuitive interface and pre-built templates."
           />
           <FeatureCard
             icon={<Cloud className="h-8 w-8 text-purple-500" />}
-            title="Tailored Product Roadmap"
-            description="Get a detailed plan and outline for your SaaS, ready for development and launch."
+            title="Comprehensive Infrastructure"
+            description="Automated setup of cloud infrastructure, APIs, databases, and CI/CD pipelines."
           />
           <FeatureCard
             icon={<CreditCard className="h-8 w-8 text-red-500" />}
-            title="Early Access Opportunities"
-            description="Chance to get your SaaS built and launched for free if your idea stands out."
+            title="Integrated Payment Systems"
+            description="Seamlessly handle transactions with built-in payment portals and financial management tools."
           />
           <FeatureCard
             icon={<Users className="h-8 w-8 text-yellow-500" />}
-            title="User-Centric Approach"
-            description="Casual, fun 'bestie' interactions to make your SaaS planning experience enjoyable."
+            title="User Account Management"
+            description="Robust user authentication, authorization, and profile management systems."
           />
           <FeatureCard
             icon={<Megaphone className="h-8 w-8 text-indigo-500" />}
-            title="Exclusive Waitlist"
-            description="Join our waitlist for the chance to be among the first to use our revolutionary platform."
+            title="Marketing & Customer Engagement"
+            description="Built-in tools for marketing, advertising, and managing customer interactions."
           />
         </div>
 
@@ -57,11 +57,11 @@ const Index = () => {
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full text-lg"
             onClick={handleGetStarted}
           >
-            Start Brainstorming Now!
+            Get Started Now
           </Button>
         </div>
 
-        {showChat && <BrainstormChat />}
+        {showChat && <ChatInterface />}
       </div>
     </div>
   );
