@@ -1,0 +1,61 @@
+# Quick SaaS Builder API Documentation
+
+## Overview
+The Quick SaaS Builder API enables users to generate ideas for optimizing workflows, enhance decision-making using advanced AI, and leverage integrated technologies such as True AGI and HiveMind. Below is the detailed documentation for each of the available API endpoints.
+
+## Base URL
+The base URL for the API is:
+```
+http://localhost:5000
+```
+
+## Endpoints
+
+### 1. `/generate_idea`
+
+- **Description**: Generates an idea or solution based on user-provided input, leveraging advanced AI processing.
+- **Method**: `POST`
+
+#### Request Format
+- **Content Type**: `application/json`
+- **Parameters**:
+  - `input` (string, required): The user-provided text for which an idea will be generated.
+
+##### Example Request
+```json
+{
+  "input": "How can I optimize my workflow?"
+}
+```
+
+#### Response Format
+- **Content Type**: `application/json`
+- **Parameters**:
+  - `response` (string): The generated idea based on the provided input.
+
+##### Example Response
+```json
+{
+  "response": "You could implement automated scheduling to streamline recurring tasks and focus on more creative aspects."
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: This error occurs when the required `input` parameter is missing or incorrect.
+
+##### Example Error Response
+```json
+{
+  "error": "Invalid input"
+}
+```
+
+## Usage Notes
+- The `/generate_idea` endpoint uses several advanced AI components, including True AGI for reasoning and HiveMind for collaborative learning.
+- Ensure that the input strings are well-formed to receive meaningful and useful responses.
+
+## Next Steps
+To deploy this API, follow the deployment guide. For more advanced usage, please refer to the User Guide.
+
+---
+If you need further assistance or have specific requests for the documentation, feel free to reach out.
