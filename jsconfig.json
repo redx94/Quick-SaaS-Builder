@@ -1,4 +1,8 @@
-{
+/*
+ *   Copyright (c) 2024 Reece Dixon. All Rights Reserved.
+ *   Path: Quick-SaaS-Builder-main/jsconfig.json
+ */
+ {
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
