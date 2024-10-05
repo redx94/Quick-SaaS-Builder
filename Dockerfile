@@ -34,7 +34,7 @@ RUN npm run build
 EXPOSE 5000
 
 # Set environment variables
-ENV FLASK_APP=assistant_api.py
+ENV FLASK_APP=backend/assistant_api.py
 ENV FLASK_ENV=production
 
 # Start the Flask application
