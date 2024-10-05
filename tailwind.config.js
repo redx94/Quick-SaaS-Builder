@@ -1,8 +1,3 @@
-/*
- *   Copyright (c) 2024 Reece Dixon
- *   All Rights Reserved.
- *   Path: Quick-SaaS-Builder-main/tailwind.config.js
- */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
