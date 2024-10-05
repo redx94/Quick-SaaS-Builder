@@ -14,8 +14,8 @@ import os
 import concurrent.futures
 from qiskit import Aer, QuantumCircuit, execute
 import multiprocessing
-from hivebrain import HiveMind
-from agi_core import TrueAGI
+from hivemind import HiveMind
+from trueagi import TrueAGI
 from quantum_assistant import QuantumAssistant
 from distributed_optimizer import DistributedOptimizer
 import psutil
