@@ -8,23 +8,18 @@ import { getAIResponse } from '../utils/aiResponses';
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = async () => {
-    if (input.trim() && !isLoading) {
-      setIsLoading(true);
-      setMessages(prev => [...prev, { text: input, sender: 'user' }]);
+  const handleSend = () => {
+    if (input.trim()) {
+      setMessages([...messages, { text: input, sender: 'user' }]);
+      const aiResponse = getAIResponse(input);
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          text: aiResponse, 
+          sender: 'ai' 
+        }]);
+      }, 1000);
       setInput('');
-      
-      try {
-        const aiResponse = await getAIResponse(input);
-        setMessages(prev => [...prev, { text: aiResponse, sender: 'ai' }]);
-      } catch (error) {
-        console.error('Error getting AI response:', error);
-        setMessages(prev => [...prev, { text: "I'm sorry, but I encountered an error. Please try again.", sender: 'ai' }]);
-      } finally {
-        setIsLoading(false);
-      }
     }
   };
 
@@ -50,11 +45,8 @@ const ChatInterface = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             className="flex-grow mr-2"
-            disabled={isLoading}
           />
-          <Button onClick={handleSend} disabled={isLoading}>
-            {isLoading ? 'Sending...' : 'Send'}
-          </Button>
+          <Button onClick={handleSend}>Send</Button>
         </div>
       </CardContent>
     </Card>
