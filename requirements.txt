@@ -18,10 +18,10 @@ ray==2.37.0  # Updated version of ray
 phe==1.5.0
 
 # Custom Advanced AI Modules
-hivebrain @ file:/modules/hivebrain
-agi_core @ file:/modules/agi_core
-quantum_assistant @ file:/modules/quantum_assistant
-distributed_optimizer @ file:/modules/distributed_optimizer
+hivebrain @ file:modules/hivebrain
+agi_core @ file:modules/agi_core
+quantum_assistant @ file:modules/quantum_assistant
+distributed_optimizer @ file:modules/distributed_optimizer
 
 # Other Dependencies
 psutil==5.9.5
