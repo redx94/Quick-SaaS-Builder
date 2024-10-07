@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // Start the backend server
-const backend = spawn('python', [path.join(__dirname, 'backend', 'assistant_api.py')], {
+const backend = spawn('python', [path.join(__dirname, 'src', 'backend', 'assistant_api.py')], {
   stdio: 'inherit',
 });
 
