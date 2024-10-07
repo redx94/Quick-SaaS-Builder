@@ -10,4 +10,4 @@ hivemind==1.0.0
 trueagi==0.1.0
 quantum-assistant==0.2.0
 distributed-optimizer==0.3.0
-requests==2.26.0
+requests==2.32.2
