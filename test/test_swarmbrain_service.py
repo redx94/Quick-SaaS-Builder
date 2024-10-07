@@ -5,6 +5,7 @@ import json
 
 # Mock the entire ray module
 patch('ray.serve', MagicMock()).start()
+patch('ray', MagicMock()).start()
 
 # Import SwarmBrainService after mocking ray
 from src.backend.assistant_api import SwarmBrainService
@@ -42,11 +43,13 @@ class TestSwarmBrainService(unittest.TestCase):
 
     @patch('qiskit.Aer.get_backend')
     @patch('qiskit.execute')
-    def test_quantum_optimize(self, mock_execute, mock_get_backend):
+    @patch.object(SwarmBrainService, 'optimizer')
+    def test_quantum_optimize(self, mock_optimizer, mock_execute, mock_get_backend):
         mock_get_backend.return_value = MagicMock()
         mock_execute.return_value.result.return_value.get_counts.return_value = {
             '000': 1024, '001': 512, '010': 256, '011': 256
         }
+        mock_optimizer.optimize.return_value = torch.tensor([0.4, 0.5, 0.6])
         data = torch.tensor([0.1, 0.2, 0.3])
 
         optimized_data = self.service.quantum_optimize(data)

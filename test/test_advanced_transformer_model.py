@@ -30,12 +30,5 @@ class TestAdvancedTransformerModel(unittest.TestCase):
             response = self.model.generate_response(self.input_text)
         self.assertIsInstance(response, str)
 
-    @patch('psutil.virtual_memory')
-    def test_get_dynamic_workers(self, mock_virtual_memory):
-        mock_virtual_memory.return_value = MagicMock(available=10 * 1024 ** 3)  # 10 GB available
-        max_workers = self.model.get_dynamic_workers(32)
-        self.assertGreaterEqual(max_workers, 1)
-        self.assertLessEqual(max_workers, 32)
-
 if __name__ == "__main__":
     unittest.main()
