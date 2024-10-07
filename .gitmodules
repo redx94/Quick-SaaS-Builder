@@ -1,0 +1,3 @@
+[submodule "Quick-SaaS-Builder"]
+  path = Quick-SaaS-Builder
+  url = <URL of the submodule repository>
