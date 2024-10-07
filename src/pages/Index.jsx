@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Rocket, Code, Bot, Cloud, CreditCard, Users, Megaphone } from "lucide-react";
-import ChatInterface from '../components/ChatInterface';
 
 const Index = () => {
   const [showChat, setShowChat] = useState(false);
@@ -60,8 +59,6 @@ const Index = () => {
             Get Started Now
           </Button>
         </div>
-
-        {showChat && <ChatInterface />}
       </div>
     </div>
   );

@@ -24,9 +24,9 @@ const ChatInterface = () => {
   };
 
   return (
-    <Card className="fixed bottom-4 right-4 w-96 h-[500px] flex flex-col">
+    <Card className="fixed bottom-4 right-4 w-96 h-[500px] flex flex-col shadow-lg">
       <CardContent className="flex flex-col h-full p-4">
-        <ScrollArea className="flex-grow mb-4">
+        <ScrollArea className="flex-grow mb-4 pr-4">
           {messages.map((message, index) => (
             <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
               <span className={`inline-block p-2 rounded-lg ${
