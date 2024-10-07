@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from 'react-query';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -23,10 +23,7 @@ const ChatInterface = () => {
     return response.json();
   };
 
-  const { mutate, isLoading } = useQuery({
-    queryKey: ['generateIdea'],
-    queryFn: () => generateIdea(input),
-    enabled: false,
+  const mutation = useMutation(generateIdea, {
     onSuccess: (data) => {
       setMessages(prev => [...prev, { text: data.response, sender: 'ai' }]);
     },
@@ -39,7 +36,7 @@ const ChatInterface = () => {
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: 'user' }]);
-      mutate();
+      mutation.mutate(input);
       setInput('');
     }
   };
@@ -67,8 +64,8 @@ const ChatInterface = () => {
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             className="flex-grow mr-2"
           />
-          <Button onClick={handleSend} disabled={isLoading}>
-            {isLoading ? 'Thinking...' : 'Send'}
+          <Button onClick={handleSend} disabled={mutation.isLoading}>
+            {mutation.isLoading ? 'Thinking...' : 'Send'}
           </Button>
         </div>
       </CardContent>
