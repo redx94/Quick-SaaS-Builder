@@ -3,22 +3,43 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getAIResponse } from '../utils/aiResponses';
+import { useQuery } from '@tanstack/react-query';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
+  const generateIdea = async (userInput) => {
+    const response = await fetch('/generate_idea', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ input: userInput }),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  };
+
+  const { mutate, isLoading } = useQuery({
+    queryKey: ['generateIdea'],
+    queryFn: () => generateIdea(input),
+    enabled: false,
+    onSuccess: (data) => {
+      setMessages(prev => [...prev, { text: data.response, sender: 'ai' }]);
+    },
+    onError: (error) => {
+      console.error('Error generating idea:', error);
+      setMessages(prev => [...prev, { text: 'Sorry, an error occurred. Please try again.', sender: 'ai' }]);
+    },
+  });
+
   const handleSend = () => {
     if (input.trim()) {
       setMessages([...messages, { text: input, sender: 'user' }]);
-      const aiResponse = getAIResponse(input);
-      setTimeout(() => {
-        setMessages(prev => [...prev, { 
-          text: aiResponse, 
-          sender: 'ai' 
-        }]);
-      }, 1000);
+      mutate();
       setInput('');
     }
   };
@@ -46,7 +67,9 @@ const ChatInterface = () => {
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             className="flex-grow mr-2"
           />
-          <Button onClick={handleSend}>Send</Button>
+          <Button onClick={handleSend} disabled={isLoading}>
+            {isLoading ? 'Thinking...' : 'Send'}
+          </Button>
         </div>
       </CardContent>
     </Card>
