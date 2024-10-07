@@ -35,6 +35,7 @@
     "react-dom": "^18.2.0",
     "react-query": "^3.34.0",
     "react-router-dom": "^6.4.0",
+    "sonner": "^1.5.0",
     "tailwindcss-animate": "^1.0.7",
     "vite-plugin-pwa": "^0.14.0",
     "zustand": "^4.1.0"
