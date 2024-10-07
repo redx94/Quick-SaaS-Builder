@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2024 
+ *   All rights reserved.
+ */
 // Description: This file is used to start the backend and frontend servers concurrently.
 /**
  * @file start.js

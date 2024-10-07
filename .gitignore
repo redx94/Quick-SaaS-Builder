@@ -4,3 +4,4 @@ project-tmp.json*
 __MACOSX
 Quick-SaaS/lib/python3.12/site-packages/networkx/algorithms/vitality.py
 node_modules
+Quick-SaaS-Builder
