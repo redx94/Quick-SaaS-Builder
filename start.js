@@ -9,8 +9,13 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-// Start the backend server
-const backend = spawn('python', [path.join(__dirname, 'src', 'backend', 'assistant_api.py')], {
+// Start the backend chat interface
+const backendChatInterface = spawn('python', [path.join(__dirname, 'src', 'backend', 'backend_chat_interface.py')], {
+  stdio: 'inherit',
+});
+
+// Start the assistant API
+const assistantAPI = spawn('python', [path.join(__dirname, 'src', 'backend', 'assistant_api.py')], {
   stdio: 'inherit',
 });
 
@@ -21,7 +26,8 @@ const frontend = spawn('npm', ['run', 'dev'], {
 
 // Handle process termination
 process.on('SIGINT', () => {
-  backend.kill();
+  backendChatInterface.kill();
+  assistantAPI.kill();
   frontend.kill();
   process.exit();
 });
