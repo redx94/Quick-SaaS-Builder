@@ -12,10 +12,7 @@ import numpy as np
 from qiskit import Aer, QuantumCircuit, execute
 import psutil
 from cachetools import LRUCache, cached
-from hivemind import HiveMind
-from trueagi import TrueAGI
-from quantum_assistant import QuantumAssistant
-from distributed_optimizer import DistributedOptimizer
+from backend_chat_interface import TrueAGI, HiveMind, QuantumAssistant, DistributedOptimizer
 
 app = Flask(__name__)
 
@@ -78,25 +75,19 @@ def generate_idea():
     user_input = data.get('input', '')
 
     if user_input:
-        # Generate initial response using Transformer model
         initial_response = transformer_model.generate_response(user_input)
-        
-        # Apply AGI reasoning
         agi_response = agi_system.reason(initial_response)
-        
-        # Enhance response with HiveMind
         hive_response = hive_mind.enhance_response(agi_response)
-        
-        # Apply quantum optimization
         quantum_optimized = quantum_assistant.optimize(hive_response)
-        
-        # Use SwarmBrain for final processing
         swarm_brain = SwarmBrainService.get_handle()
         final_response = ray.get(swarm_brain.remote({"data": quantum_optimized}))
-
         return jsonify({'response': final_response['result']})
     else:
         return jsonify({'error': 'Invalid input'}), 400
+
+@app.route('/status', methods=['GET'])
+def status():
+    return jsonify({'status': 'online'}), 200
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)
