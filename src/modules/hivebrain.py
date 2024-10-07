@@ -1,7 +1,7 @@
 # hivebrain.py
 # Author: Reece Dixon
 # Copyright (c) 2024 Reece Dixon. All Rights Reserved.
-# Path: Quick-SaaS-Builder-main/modules/hivebrain.py
+# Path: Quick-SaaS-Builder-main/src/modules/hivebrain.py
 
 import numpy as np
 
