@@ -12,7 +12,10 @@ import numpy as np
 from qiskit import Aer, QuantumCircuit, execute
 import psutil
 from cachetools import LRUCache, cached
-from backend_chat_interface import TrueAGI, HiveMind, QuantumAssistant, DistributedOptimizer
+from src.modules.agi_core import TrueAGI
+from src.modules.hivebrain import HiveMind
+from src.modules.quantum_assistant import QuantumAssistant
+from src.modules.distributed_optimizer import DistributedOptimizer
 
 app = Flask(__name__)
 
