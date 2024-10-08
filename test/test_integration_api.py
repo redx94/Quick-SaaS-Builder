@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 # Mock the entire flask module
 patch('flask.Flask', MagicMock()).start()
 patch('ray', MagicMock()).start()
+patch('ray.get', MagicMock()).start()
 
 # Import app after mocking flask
 from src.backend.assistant_api import app
@@ -32,7 +33,7 @@ class TestIntegrationAPI(unittest.TestCase):
         mock_hive.return_value = "Hive response"
         mock_quantum.return_value = "Quantum response"
         mock_swarm.return_value.remote.return_value = MagicMock()
-        mock_ray_get.return_value = {"result": "Final response"}
+        mock_ray_get.return_value = {"result": ["Final response"]}
 
         response = self.client.post('/generate_idea',
                                     data=json.dumps({'input': 'How can I optimize my workflow?'}),
