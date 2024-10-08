@@ -20,7 +20,6 @@ patch('torch.load', MagicMock()).start()
 from src.backend.assistant_api import SwarmBrainService
 
 class TestSwarmBrainService(unittest.TestCase):
-
     def setUp(self):
         self.service = SwarmBrainService()
 
