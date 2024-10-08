@@ -6,42 +6,11 @@
 import subprocess
 import threading
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 
-# Placeholder implementation of TrueAGI, HiveMind, QuantumAssistant, and DistributedOptimizer
-class TrueAGI:
-    def __init__(self, memory_size=1024, reasoning_depth=5):
-        self.memory_size = memory_size
-        self.reasoning_depth = reasoning_depth
-
-    def reason(self, input_data):
-        # Placeholder reasoning logic
-        return f"Reasoned response for: {input_data}"
-
-
-class HiveMind:
-    def __init__(self, learning_rate=0.05, mutation_rate=0.1):
-        self.learning_rate = learning_rate
-        self.mutation_rate = mutation_rate
-
-    def enhance_response(self, input_data):
-        # Placeholder enhancement logic
-        return f"Enhanced response for: {input_data}"
-
-
-class QuantumAssistant:
-    def optimize(self, input_data):
-        # Placeholder quantum optimization logic
-        return f"Optimized data: {input_data}"
-
-
-class DistributedOptimizer:
-    def optimize(self, input_data):
-        # Placeholder distributed optimization logic
-        return f"Optimized data (distributed): {input_data}"
-
-# Flask server to coordinate backend services
 dashboard_app = Flask(__name__)
+CORS(dashboard_app)
 
 # Thread function to run the Flask API server for assistant_api.py
 def run_assistant_api():

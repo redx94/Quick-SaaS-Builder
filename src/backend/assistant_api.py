@@ -4,6 +4,7 @@
 # Path: Quick-SaaS-Builder-main/backend/assistant_api.py
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 import ray
@@ -18,6 +19,7 @@ from src.modules.quantum_assistant import QuantumAssistant
 from src.modules.distributed_optimizer import DistributedOptimizer
 
 app = Flask(__name__)
+CORS(app)
 
 class AdvancedTransformerModel:
     def __init__(self):
@@ -74,23 +76,28 @@ SwarmBrainService.deploy()
 
 @app.route('/generate_idea', methods=['POST'])
 def generate_idea():
-    data = request.get_json()
-    user_input = data.get('input', '')
+    try:
+        data = request.get_json()
+        user_input = data.get('input', '')
 
-    if user_input:
+        if not user_input:
+            return jsonify({'error': 'Invalid input'}), 400
+
         initial_response = transformer_model.generate_response(user_input)
         agi_response = agi_system.reason(initial_response)
         hive_response = hive_mind.enhance_response(agi_response)
         quantum_optimized = quantum_assistant.optimize(hive_response)
         swarm_brain = SwarmBrainService.get_handle()
         final_response = ray.get(swarm_brain.remote({"data": quantum_optimized}))
-        return jsonify({'response': final_response['result']})
-    else:
-        return jsonify({'error': 'Invalid input'}), 400
+        
+        return jsonify({'response': final_response['result']}), 200
+    except Exception as e:
+        app.logger.error(f"Error in generate_idea: {str(e)}")
+        return jsonify({'error': 'An internal error occurred'}), 500
 
 @app.route('/status', methods=['GET'])
 def status():
     return jsonify({'status': 'online'}), 200
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='127.0.0.1', port=5000, debug=True)

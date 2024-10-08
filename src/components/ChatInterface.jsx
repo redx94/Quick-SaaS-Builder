@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from 'react-query';
+import { toast } from 'sonner';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -29,13 +30,14 @@ const ChatInterface = () => {
     },
     onError: (error) => {
       console.error('Error generating idea:', error);
+      toast.error('An error occurred. Please try again.');
       setMessages(prev => [...prev, { text: 'Sorry, an error occurred. Please try again.', sender: 'ai' }]);
     },
   });
 
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { text: input, sender: 'user' }]);
+      setMessages(prev => [...prev, { text: input, sender: 'user' }]);
       mutation.mutate(input);
       setInput('');
     }
