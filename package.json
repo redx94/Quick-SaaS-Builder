@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/redx94/quick-saas-builder"
+    "url": "https://github.com/redx94/Quick-SaaS-Builder"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
