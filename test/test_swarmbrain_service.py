@@ -2,12 +2,21 @@ import unittest
 from unittest.mock import patch, MagicMock
 import torch
 import json
+import sys
+import os
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Mock the entire ray module
 patch('ray.serve', MagicMock()).start()
 patch('ray', MagicMock()).start()
 
-# Import SwarmBrainService after mocking ray
+# Mock torch
+patch('torch.tensor', MagicMock(return_value=MagicMock())).start()
+patch('torch.load', MagicMock()).start()
+
+# Import SwarmBrainService after mocking ray and torch
 from src.backend.assistant_api import SwarmBrainService
 
 class TestSwarmBrainService(unittest.TestCase):
@@ -20,10 +29,8 @@ class TestSwarmBrainService(unittest.TestCase):
         self.service.load_model()
         mock_load_model.assert_called_once()
 
-    @patch('torch.tensor')
     @patch.object(SwarmBrainService, 'quantum_optimize')
-    def test_call_valid_request(self, mock_quantum_optimize, mock_tensor):
-        mock_tensor.return_value = torch.tensor([0.1, 0.2, 0.3])
+    def test_call_valid_request(self, mock_quantum_optimize):
         mock_quantum_optimize.return_value = torch.tensor([0.4, 0.5, 0.6])
         request_data = json.dumps({"data": [0.1, 0.2, 0.3]})
         request = MagicMock(json=json.loads(request_data))
