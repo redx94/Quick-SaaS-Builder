@@ -24,3 +24,5 @@ eggs/
 *.njsproj
 *.sln
 *.sw?
+venv-qsb
+/pyvenv.cfg
