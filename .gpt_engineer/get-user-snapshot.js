@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2024 
+ *   All rights reserved.
+ */
 import { toPng } from "html-to-image";
 
 export const loadGetUserSnapshotEventListener = () => {
