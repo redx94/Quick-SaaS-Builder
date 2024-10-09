@@ -5,13 +5,11 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 import ray
 from ray import serve
 import numpy as np
 from qiskit import Aer, QuantumCircuit, execute
-import psutil
 from cachetools import LRUCache, cached
 from src.modules.agi_core import TrueAGI
 from src.modules.hivebrain import HiveMind
@@ -23,18 +21,16 @@ CORS(app)
 
 class AdvancedTransformerModel:
     def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained('EleutherAI/gpt-neo-2.7B')
-        self.model = self.load_model()
         self.model_cache = LRUCache(maxsize=1)
 
     @cached(cache=lambda self: self.model_cache)
     def load_model(self):
-        return AutoModelForCausalLM.from_pretrained('EleutherAI/gpt-neo-2.7B')
+        # Placeholder for model loading
+        return None
 
     def generate_response(self, input_text, max_length=300):
-        inputs = self.tokenizer(input_text, return_tensors='pt')
-        outputs = self.model.generate(**inputs, max_length=max_length, num_return_sequences=1)
-        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        # Placeholder for response generation
+        return f"Generated response for: {input_text}"
 
 transformer_model = AdvancedTransformerModel()
 agi_system = TrueAGI(memory_size=1024, reasoning_depth=5)

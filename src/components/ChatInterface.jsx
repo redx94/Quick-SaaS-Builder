@@ -5,23 +5,15 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from 'react-query';
 import { toast } from 'sonner';
+import axios from 'axios';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
   const generateIdea = async (userInput) => {
-    const response = await fetch('/generate_idea', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ input: userInput }),
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
+    const response = await axios.post('http://localhost:5000/generate_idea', { input: userInput });
+    return response.data;
   };
 
   const mutation = useMutation(generateIdea, {
