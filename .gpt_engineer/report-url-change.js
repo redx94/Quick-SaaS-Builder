@@ -1,11 +1,4 @@
 export const loadReportUrlChangeEventListener = () => {
-  /**
-   * Listen to URL changes and report them to the parent window
-   *
-   * See https://stackoverflow.com/a/46428962
-   * The Navigation API https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API seemed promising,
-   * but it is not supported in all major browsers.
-   */
   const observeUrlChange = () => {
     let oldHref = document.location.href;
     const body = document.querySelector("body");
@@ -21,3 +14,6 @@ export const loadReportUrlChangeEventListener = () => {
 
   window.addEventListener("load", observeUrlChange);
 };
+
+// Next-Level Enhancements:
+// 1. Use the Navigation API for more robust URL change detection when it becomes widely supported.
