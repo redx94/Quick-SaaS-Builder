@@ -22,21 +22,27 @@ class TestAdvancedTransformerModel(unittest.TestCase):
 
     @patch.object(AdvancedTransformerModel, 'load_model')
     def test_load_model(self, mock_load_model):
-        mock_load_model.return_value = MagicMock()
-        model = self.model.load_model()
-        self.assertIsNotNone(model)
-        mock_load_model.assert_called_once()
+        try:
+            mock_load_model.return_value = MagicMock()
+            model = self.model.load_model()
+            self.assertIsNotNone(model)
+            mock_load_model.assert_called_once()
+        except Exception as e:
+            self.fail(f"load_model raised an exception: {e}")
 
     @patch('torch.tensor')
     def test_generate_response(self, mock_tensor):
-        mock_tensor.return_value = MagicMock()
-        with patch.object(self.model.model, 'generate') as mock_generate:
-            mock_generate.return_value = [MagicMock()]
-            with patch.object(self.model.tokenizer, 'decode') as mock_decode:
-                mock_decode.return_value = "Generated response"
-                response = self.model.generate_response(self.input_text)
-        self.assertIsInstance(response, str)
-        self.assertEqual(response, "Generated response")
+        try:
+            mock_tensor.return_value = MagicMock()
+            with patch.object(self.model.model, 'generate') as mock_generate:
+                mock_generate.return_value = [MagicMock()]
+                with patch.object(self.model.tokenizer, 'decode') as mock_decode:
+                    mock_decode.return_value = "Generated response"
+                    response = self.model.generate_response(self.input_text)
+            self.assertIsInstance(response, str)
+            self.assertEqual(response, "Generated response")
+        except Exception as e:
+            self.fail(f"generate_response raised an exception: {e}")
 
 if __name__ == "__main__":
     unittest.main()
