@@ -104,6 +104,25 @@ This project is licensed under the terms of the [AGPLv3 License](LICENSE).
 
 Start building your SaaS today with the most advanced AI builder on the internet! Feel free to reach out for support or collaboration.
 
+## 🛠️ Troubleshooting
+
+### Common Issues and Solutions
+
+1. **Docker Issues**
+   - **Error**: Docker daemon not running.
+   - **Solution**: Start the Docker daemon using `sudo systemctl start docker` on Linux or by launching the Docker Desktop app on Mac/Windows.
+
+2. **Dependency Installation Failures**
+   - **Error**: `npm install` or `pip install` command fails.
+   - **Solution**: Ensure you have the latest versions of Node.js and Python. Run `npm install -g npm` and `pip install --upgrade pip`.
+
+3. **Application Startup Issues**
+   - **Error**: Application does not start with `docker-compose up`.
+   - **Solution**: Check the logs for specific errors using `docker-compose logs`. Ensure all services are up and running.
+
+### Contact Support
+For further assistance, please open an issue on our [GitHub Issues page](https://github.com/redx94/Quick-SaaS-Builder/issues).
+
 > **Follow us on GitHub**: [@redx94](https://github.com/redx94)
 
 ![Social Banner](https://via.placeholder.com/1000x150.png?text=Join+Our+Community+and+Build+the+Future+Together)
