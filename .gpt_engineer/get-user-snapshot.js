@@ -1,7 +1,3 @@
-/*
- *   Copyright (c) 2024 
- *   All rights reserved.
- */
 import { toPng } from "html-to-image";
 
 export const loadGetUserSnapshotEventListener = () => {
@@ -12,3 +8,6 @@ export const loadGetUserSnapshotEventListener = () => {
     });
   });
 };
+
+// Next-Level Enhancements:
+// 1. Utilize Web Workers to offload the image processing to a background thread.
