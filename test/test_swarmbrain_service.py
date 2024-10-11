@@ -1,8 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
+from parameterized import parameterized
 import json
 import sys
 import os
+import time
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -36,22 +38,26 @@ class TestSwarmBrainService(unittest.TestCase):
             self.fail(f"load_model raised an exception: {e}")
 
     @patch.object(SwarmBrainService, 'quantum_optimize')
-    def test_call_valid_request(self, mock_quantum_optimize):
+    @parameterized.expand([
+        ({"data": [0.1, 0.2, 0.3]}, True),
+        ({"data": [0.5, 0.6, 0.7]}, True),
+    ])
+    def test_call_valid_request(self, request_data, expected_result, mock_quantum_optimize):
         try:
             mock_quantum_optimize.return_value = MagicMock()
-            request_data = json.dumps({"data": [0.1, 0.2, 0.3]})
-            request = MagicMock(json=json.loads(request_data))
+            request = MagicMock(json=request_data)
 
             response = self.service(request)
             self.assertIsInstance(response, dict)
             self.assertIn('result', response)
+            self.assertEqual(bool(response['result']), expected_result)
         except Exception as e:
             self.fail(f"test_call_valid_request raised an exception: {e}")
 
     def test_call_invalid_request(self):
         try:
-            request_data = json.dumps({"wrong_key": [0.1, 0.2, 0.3]})
-            request = MagicMock(json=json.loads(request_data))
+            request_data = {"wrong_key": [0.1, 0.2, 0.3]}
+            request = MagicMock(json=request_data)
 
             response = self.service(request)
             self.assertIsInstance(response, dict)
@@ -76,6 +82,15 @@ class TestSwarmBrainService(unittest.TestCase):
             self.assertIsNotNone(optimized_data)
         except Exception as e:
             self.fail(f"quantum_optimize raised an exception: {e}")
+
+    def test_performance_call(self):
+        request_data = json.dumps({"data": [0.1, 0.2, 0.3]})
+        request = MagicMock(json=json.loads(request_data))
+
+        start_time = time.time()
+        self.service(request)
+        duration = time.time() - start_time
+        self.assertLess(duration, 1, "Performance issue: service call took too long")
 
 if __name__ == "__main__":
     unittest.main()
