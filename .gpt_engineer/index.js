@@ -9,3 +9,6 @@ const main = () => {
 };
 
 main();
+
+// Next-Level Enhancements:
+// 1. Implement a Service Worker for offline capabilities and caching.
