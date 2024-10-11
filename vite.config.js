@@ -5,10 +5,9 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve, join } from 'path';
-import { fileURLToPath, URL } from 'url';
-import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -39,26 +38,45 @@ export default defineConfig({
       }
     })
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   server: {
     host: '::',
     port: 8080,
-  },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-      'lib': resolve(__dirname, 'lib'),
-      'components': fileURLToPath(new URL('./src/components', import.meta.url))
-    }
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true,
     rollupOptions: {
-      external: ['html-to-image']
+      external: ['html-to-image'],
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    }
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
+  },
+  css: {
+    postcss: {
+      plugins: [
+        require('autoprefixer'),
+        require('postcss-nested')
+      ]
     }
   },
   optimizeDeps: {
+    entries: ['src/main.js'],
+    exclude: ['some-big-package'],
     include: ['react', 'react-dom']
   }
 });
