@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
-import autoprefixer from 'autoprefixer';  // Updated import
+import autoprefixer from 'autoprefixer';
+import postcssNested from 'postcss-nested'; // Static import
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -69,8 +70,8 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        autoprefixer,  // Updated import usage
-        require('postcss-nested')
+        autoprefixer,
+        postcssNested // Updated import usage
       ]
     }
   },
