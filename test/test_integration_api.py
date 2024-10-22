@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 # Mock the entire flask module
 patch('flask.Flask', MagicMock()).start()
-patch('ray', MagicMock()).start()
+patch('ray.serve', MagicMock()).start()
 patch('ray.get', MagicMock()).start()
 
 # Import app after mocking flask
