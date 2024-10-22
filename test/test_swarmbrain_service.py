@@ -9,9 +9,8 @@ import time
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Mock the entire ray module
+# Mock the entire ray.serve module
 patch('ray.serve', MagicMock()).start()
-patch('ray', MagicMock()).start()
 
 # Mock torch
 patch('torch.tensor', MagicMock(return_value=MagicMock())).start()
