@@ -13,6 +13,7 @@ transformers==4.38.0
 
 # Quantum Computing Integration
 qiskit==0.44.2
+qiskit-aer
 
 # Advanced Distributed System Packages
 ray[serve]==2.10.0
