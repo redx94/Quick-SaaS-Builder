@@ -15,7 +15,7 @@ transformers==4.38.0
 qiskit==0.44.2
 
 # Advanced Distributed System Packages
-ray==2.10.0
+ray[serve]==2.10.0
 phe==1.5.0
 
 # Other Dependencies
