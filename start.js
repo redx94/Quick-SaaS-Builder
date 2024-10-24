@@ -1,20 +1,23 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
+
 const app = express();
-const port = 5000;
 
-app.get('/', (req, res) => {
-  try {
-    res.send('Hello World!');
-  } catch (error) {
-    console.error('Error handling request:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
+const options = {
+    key: fs.readFileSync('path/to/your-key.pem'),
+    cert: fs.readFileSync('path/to/your-cert.pem')
+};
 
-const server = app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
-
-server.on('error', (err) => {
-  console.error('Failed to start server:', err);
-});
+// Setup server based on the environment
+if (process.env.NODE_ENV === 'production') {
+    // Use HTTPS in production
+    https.createServer(options, app).listen(3000, () => {
+        console.log('Server running with HTTPS on port 3000');
+    });
+} else {
+    // Use HTTP for development to avoid SSL issues
+    app.listen(3000, () => {
+        console.log('Server running with HTTP on port 3000');
+    });
+}
