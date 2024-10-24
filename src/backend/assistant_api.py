@@ -37,6 +37,23 @@ agi_system = TrueAGI(memory_size=1024, reasoning_depth=5)
 hive_mind = HiveMind(learning_rate=0.05, mutation_rate=0.1)
 quantum_assistant = QuantumAssistant()
 
+class EthicsEvaluator:
+    def __init__(self):
+        self.ethical_guidelines = [
+            'unauthorized_data_access',
+            'unencrypted_data_transfer',
+            'excessive_resource_usage'
+        ]
+
+    def evaluate_code(self, code: str) -> list:
+        violations = []
+        for guideline in self.ethical_guidelines:
+            if guideline in code.lower():
+                violations.append(f"Potential ethical violation: {guideline}")
+        return violations
+
+ethics_evaluator = EthicsEvaluator()
+
 @serve.deployment(ray_actor_options={"num_cpus": 2, "num_gpus": 1})
 class SwarmBrainService:
     def __init__(self):
@@ -89,6 +106,30 @@ def generate_idea():
         return jsonify({'response': final_response['result']}), 200
     except Exception as e:
         app.logger.error(f"Error in generate_idea: {str(e)}")
+        return jsonify({'error': 'An internal error occurred'}), 500
+
+@app.route('/ask_socratic', methods=['POST'])
+def ask_socratic():
+    try:
+        data = request.get_json()
+        question = data.get('question', '')
+        
+        if not question:
+            return jsonify({'error': 'Invalid input'}), 400
+
+        # Use existing AI components for analysis
+        initial_analysis = transformer_model.generate_response(question)
+        agi_insight = agi_system.reason(initial_analysis)
+        ethical_review = ethics_evaluator.evaluate_code(question)
+        
+        response = {
+            'answer': agi_insight,
+            'ethical_concerns': ethical_review
+        }
+        
+        return jsonify(response), 200
+    except Exception as e:
+        app.logger.error(f"Error in ask_socratic: {str(e)}")
         return jsonify({'error': 'An internal error occurred'}), 500
 
 @app.route('/status', methods=['GET'])
