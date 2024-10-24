@@ -29,9 +29,13 @@ CMD ["node", "start.js"]
 # Final Deployment Stage with Nginx for SSL Handling
 FROM nginx:alpine
 
-# Copy custom SSL certificates for Nginx if available
-COPY ssl/cert.pem /etc/ssl/certs/cert.pem
-COPY ssl/key.pem /etc/ssl/private/key.pem
+WORKDIR /etc/ssl
+
+# Generate self-signed SSL certificates if they don't exist
+RUN apk add --no-cache openssl && \
+    if [ ! -f cert.pem ] || [ ! -f key.pem ]; then \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout key.pem -out cert.pem -subj "/CN=localhost"; \
+    fi
 
 # Nginx configuration for SSL
 COPY nginx.conf /etc/nginx/nginx.conf
