@@ -1,34 +1,31 @@
-# agi_core.py
-# Author: Reece Dixon
-# Copyright (c) 2024 Reece Dixon. All Rights Reserved.
-# Path: Quick-SaaS-Builder-main/modules/agi_core.py
 
-class TrueAGI:
-    def __init__(self, memory_size=1024, reasoning_depth=5):
-        self.memory_size = memory_size
-        self.reasoning_depth = reasoning_depth
-        self.knowledge_base = []
+from frontend_generator import FrontendGenerator
+from backend_generator import BackendGenerator
+from deployment_manager import DeploymentManager
 
-    def reason(self, input_data):
-        """
-        Perform advanced reasoning on the input data.
-        """
-        response = input_data
-        for _ in range(self.reasoning_depth):
-            response = self._reasoning_step(response)
-        self._store_in_memory(response)
-        return response
+class AGICore:
+    def __init__(self):
+        self.frontend_gen = FrontendGenerator()
+        self.backend_gen = BackendGenerator()
+        self.deployment_manager = DeploymentManager()
 
-    def _reasoning_step(self, data):
-        """
-        A single step in the reasoning process, applying basic logic to transform the data.
-        """
-        return data[::-1]  # Placeholder logic: reverse the input data
+    def generate_frontend(self, frontend_tasks):
+        for task in frontend_tasks:
+            print(f"Generating frontend component for task: {task}")
+            self.frontend_gen.create_component(task)
 
-    def _store_in_memory(self, data):
-        """
-        Store data in memory for future use.
-        """
-        if len(self.knowledge_base) >= self.memory_size:
-            self.knowledge_base.pop(0)
-        self.knowledge_base.append(data)
+    def generate_backend(self, backend_tasks):
+        for task in backend_tasks:
+            print(f"Generating backend API or model for task: {task}")
+            self.backend_gen.create_backend_service(task)
+
+    def deploy_application(self, deployment_tasks):
+        for task in deployment_tasks:
+            print(f"Handling deployment for task: {task}")
+            self.deployment_manager.deploy(task)
+
+if __name__ == "__main__":
+    agi_core = AGICore()
+    agi_core.generate_frontend(["Create a landing page with a signup form"])
+    agi_core.generate_backend(["Set up a REST API for user data management"])
+    agi_core.deploy_application(["Deploy to AWS with a PostgreSQL database"])
