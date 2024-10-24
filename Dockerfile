@@ -1,16 +1,30 @@
-# Use multi-stage builds to reduce image size
-FROM node:14 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
 
-# Build the application
+# Backend Dockerfile
+FROM python:3.9-slim AS backend
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY src/ .
+
+CMD ["python", "app.py"]
+
+# Frontend Dockerfile
+FROM node:16 AS frontend
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend/ .
+
 RUN npm run build
 
-# Use a lightweight base image for the final stage
-FROM node:14-alpine
-WORKDIR /app
-COPY --from=build /app .
-EXPOSE 5000
-CMD ["npm", "start"]
+# Final Deployment Image
+FROM nginx:alpine
+
+COPY --from=frontend /app/build /usr/share/nginx/html
+COPY --from=backend /app /app
