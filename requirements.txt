@@ -1,5 +1,3 @@
-# requirements.txt
-
 # Core Packages
 flask==2.2.5
 flask-cors==4.0.2
@@ -19,7 +17,9 @@ qiskit-aer
 ray[serve]==2.10.0
 phe==1.5.0
 
+# Testing Dependencies
+parameterized==0.9.0
+
 # Other Dependencies
 psutil==5.9.5
 concurrent-log-handler==0.9.25
-parameterized
