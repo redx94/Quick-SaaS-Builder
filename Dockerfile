@@ -48,13 +48,19 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
     && chmod 600 /etc/ssl/private/key.pem \
     && chmod 644 /etc/ssl/certs/cert.pem
 
-# Copy Nginx configuration
+# Generate self-signed SSL certificates if they don't exist
+RUN apk add --no-cache openssl && \
+    if [ ! -f cert.pem ] || [ ! -f key.pem ]; then \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout key.pem -out cert.pem -subj "/CN=localhost"; \
+    fi
+
+# Nginx configuration for SSL
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy static files from backend stage
+# Copy static files from backend or public
 COPY --from=backend /app/public /usr/share/nginx/html
 
-# Expose HTTPS port
+# Expose standard HTTPS port
 EXPOSE 443
 
 # Start Nginx
