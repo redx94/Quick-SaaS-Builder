@@ -4,6 +4,7 @@ pipeline {
         NODE_HOME = '/usr/local/bin/node'
         NPM_PATH = "${NODE_HOME}/bin"
         VERCEL_TOKEN = credentials('vercel_token')
+        NODE_TLS_REJECT_UNAUTHORIZED = '0' // Only for development purposes, not for production
     }
     stages {
         stage('Checkout') {

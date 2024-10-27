@@ -34,7 +34,19 @@ CMD ["node", "start.js"]
 # Final Deployment Stage with Nginx for SSL Handling
 FROM nginx:alpine
 
-WORKDIR /etc/ssl
+# Install OpenSSL
+RUN apk add --no-cache openssl
+
+# Create SSL certificate directories
+RUN mkdir -p /etc/ssl/private /etc/ssl/certs
+
+# Generate SSL certificates with proper permissions
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+    -keyout /etc/ssl/private/key.pem \
+    -out /etc/ssl/certs/cert.pem \
+    -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost" \
+    && chmod 600 /etc/ssl/private/key.pem \
+    && chmod 644 /etc/ssl/certs/cert.pem
 
 # Generate self-signed SSL certificates if they don't exist
 RUN apk add --no-cache openssl && \
@@ -45,7 +57,7 @@ RUN apk add --no-cache openssl && \
 # Nginx configuration for SSL
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy static files (from backend or public)
+# Copy static files from backend or public
 COPY --from=backend /app/public /usr/share/nginx/html
 
 # Expose standard HTTPS port

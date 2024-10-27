@@ -11,8 +11,16 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
+  // Configure axios for development
+  const axiosInstance = axios.create({
+    baseURL: 'http://localhost:5000',
+    httpsAgent: process.env.NODE_ENV === 'development' ? {
+      rejectUnauthorized: false
+    } : undefined
+  });
+
   const generateIdea = async (userInput) => {
-    const response = await axios.post('http://localhost:5000/generate_idea', { input: userInput });
+    const response = await axiosInstance.post('/generate_idea', { input: userInput });
     return response.data;
   };
 
