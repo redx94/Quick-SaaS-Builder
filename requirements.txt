@@ -4,6 +4,8 @@ flask-cors==4.0.2
 requests==2.32.2
 numpy==1.24.3
 cachetools==5.3.0
+certifi==2024.2.2
+urllib3==2.2.0
 
 # AI and NLP Packages
 torch==2.2.0

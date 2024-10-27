@@ -5,19 +5,24 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import torch
-import ray
-from ray import serve
-import numpy as np
-from qiskit import Aer, QuantumCircuit, execute
-from cachetools import LRUCache, cached
-from src.modules.agi_core import TrueAGI
-from src.modules.hivebrain import HiveMind
-from src.modules.quantum_assistant import QuantumAssistant
-from src.modules.distributed_optimizer import DistributedOptimizer
+import ssl
+import certifi
+import requests
+from urllib3.exceptions import InsecureRequestWarning
+
+# Suppress only the single InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# Configure SSL context for development
+if app.debug:
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+else:
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 class AdvancedTransformerModel:
     def __init__(self):
@@ -137,4 +142,9 @@ def status():
     return jsonify({'status': 'online'}), 200
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        ssl_context=ssl_context if not app.debug else None,
+        debug=True
+    )
