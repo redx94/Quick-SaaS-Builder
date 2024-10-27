@@ -7,9 +7,14 @@ WORKDIR /app
 COPY package*.json ./
 COPY requirements.txt ./
 
-# Install dependencies
+# Install Node.js dependencies
 RUN npm install
-RUN apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt
+
+# Install Python and pip dependencies
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    python3 -m pip install --upgrade pip && \
+    pip3 install -r requirements.txt
 
 # Copy all backend source code
 COPY src/ ./src
