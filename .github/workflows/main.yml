@@ -44,7 +44,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip
+          sudo apt-get install -y python3-pip ca-certificates
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install --upgrade qiskit
@@ -53,6 +53,8 @@ jobs:
         run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
 
       - name: Run Python tests
+        env:
+          REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
         run: python -m unittest discover test
 
       - name: Set up Docker
@@ -60,6 +62,12 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t my-image .
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Push Docker image
         run: docker push my-image
