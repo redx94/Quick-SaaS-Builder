@@ -74,6 +74,12 @@ if __name__ == '__main__':
         ssl_context.verify_mode = ssl.CERT_NONE
         app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context, debug=True)
     else:
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
-        app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
-
+        # Production: Load SSL certificates
+        try:
+            ssl_context = ssl.create_default_context()
+            ssl_context.load_cert_chain(certfile='/etc/ssl/certs/cert.pem', keyfile='/etc/ssl/private/key.pem')
+            ssl_context.load_verify_locations(cafile='/etc/ssl/certs/ca.pem')  # Add CA certificate
+            app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
+        except Exception as e:
+            app.logger.error(f"Error loading SSL certificates: {str(e)}")
+            exit(1)  # Exit if there's an error loading certificates
