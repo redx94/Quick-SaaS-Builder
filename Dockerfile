@@ -40,19 +40,15 @@ RUN apk add --no-cache openssl
 # Create SSL certificate directories
 RUN mkdir -p /etc/ssl/private /etc/ssl/certs
 
-# Generate SSL certificates with proper permissions
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+# Generate SSL certificates with proper permissions if they don't exist
+RUN if [ ! -f /etc/ssl/certs/cert.pem ] || [ ! -f /etc/ssl/private/key.pem ]; then \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
     -keyout /etc/ssl/private/key.pem \
     -out /etc/ssl/certs/cert.pem \
-    -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost" \
-    && chmod 600 /etc/ssl/private/key.pem \
-    && chmod 644 /etc/ssl/certs/cert.pem
-
-# Generate self-signed SSL certificates if they don't exist
-RUN apk add --no-cache openssl && \
-    if [ ! -f cert.pem ] || [ ! -f key.pem ]; then \
-    openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout key.pem -out cert.pem -subj "/CN=localhost"; \
-    fi
+    -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"; \
+    chmod 600 /etc/ssl/private/key.pem; \
+    chmod 644 /etc/ssl/certs/cert.pem; \
+fi
 
 # Nginx configuration for SSL
 COPY nginx.conf /etc/nginx/nginx.conf
