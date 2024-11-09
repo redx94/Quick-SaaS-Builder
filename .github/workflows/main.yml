@@ -30,11 +30,13 @@ jobs:
           npm install
         env:
           CI: true
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
 
       - name: Build project
         run: npm run build
         env:
           CI: true
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -44,10 +46,22 @@ jobs:
       - name: Install Python dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip ca-certificates
+          sudo apt-get install -y python3-pip ca-certificates openssl
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install --upgrade qiskit
+          # Generate self-signed certificates for testing
+          sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+          sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout /etc/ssl/private/key.pem \
+            -out /etc/ssl/certs/cert.pem \
+            -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
+          sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout /etc/ssl/private/ca.key \
+            -out /etc/ssl/certs/ca.pem \
+            -subj "/C=US/ST=State/L=City/O=Organization/CN=CA"
+          sudo chmod 644 /etc/ssl/certs/cert.pem /etc/ssl/certs/ca.pem
+          sudo chmod 600 /etc/ssl/private/key.pem /etc/ssl/private/ca.key
 
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
@@ -55,6 +69,8 @@ jobs:
       - name: Run Python tests
         env:
           REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+          FLASK_ENV: development  # Use development mode for CI
+          SSL_CERT_FILE: /etc/ssl/certs/ca.pem
         run: python -m unittest discover test
 
       - name: Set up Docker
