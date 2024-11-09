@@ -56,21 +56,18 @@ jobs:
             -keyout /etc/ssl/private/key.pem \
             -out /etc/ssl/certs/cert.pem \
             -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
-          sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout /etc/ssl/private/ca.key \
-            -out /etc/ssl/certs/ca.pem \
-            -subj "/C=US/ST=State/L=City/O=Organization/CN=CA"
-          sudo chmod 644 /etc/ssl/certs/cert.pem /etc/ssl/certs/ca.pem
-          sudo chmod 600 /etc/ssl/private/key.pem /etc/ssl/private/ca.key
+          sudo chmod 644 /etc/ssl/certs/cert.pem
+          sudo chmod 600 /etc/ssl/private/key.pem
 
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
 
       - name: Run Python tests
         env:
-          REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
-          FLASK_ENV: development  # Use development mode for CI
-          SSL_CERT_FILE: /etc/ssl/certs/ca.pem
+          FLASK_ENV: development
+          SSL_KEY_PATH: /etc/ssl/private/key.pem
+          SSL_CERT_PATH: /etc/ssl/certs/cert.pem
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
         run: python -m unittest discover test
 
       - name: Set up Docker

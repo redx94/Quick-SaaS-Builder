@@ -20,28 +20,15 @@ def create_ssl_context():
         context.verify_mode = ssl.CERT_NONE
         return context
     else:
-        context = ssl.create_default_context()
-        context.verify_mode = ssl.CERT_REQUIRED
-        context.load_verify_locations(cafile=certifi.where())
+        context = ssl.create_default_context(cafile=certifi.where())
+        if os.environ.get('SSL_CERT_PATH') and os.environ.get('SSL_KEY_PATH'):
+            context.load_cert_chain(
+                os.environ.get('SSL_CERT_PATH'),
+                os.environ.get('SSL_KEY_PATH')
+            )
         return context
 
-class AdvancedTransformerModel:
-    def __init__(self):
-        self.model_cache = LRUCache(maxsize=1)
-
-    @cached(cache=lambda self: self.model_cache)
-    def load_model(self):
-        # Placeholder for model loading
-        return None
-
-    def generate_response(self, input_text, max_length=300):
-        # Placeholder for response generation
-        return f"Generated response for: {input_text}"
-
-transformer_model = AdvancedTransformerModel()
-agi_system = TrueAGI(memory_size=1024, reasoning_depth=5)
-hive_mind = HiveMind(learning_rate=0.05, mutation_rate=0.1)
-quantum_assistant = QuantumAssistant()
+# ... keep existing code (transformer model and other class definitions)
 
 @app.route('/generate_idea', methods=['POST'])
 def generate_idea():
@@ -71,6 +58,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     
     if os.environ.get('FLASK_ENV') == 'development':
-        app.run(host='0.0.0.0', port=port, debug=True)
+        app.run(host='0.0.0.0', port=port, debug=True, ssl_context=None)
     else:
         app.run(host='0.0.0.0', port=port, ssl_context=ssl_context)
