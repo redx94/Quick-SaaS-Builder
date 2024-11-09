@@ -5,12 +5,16 @@ import certifi
 import requests
 from urllib3.exceptions import InsecureRequestWarning
 import os
+from src.modules.ai_provider import AIProvider
 
 # Suppress only the single InsecureRequestWarning in development
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 app = Flask(__name__)
 CORS(app)
+
+# Initialize the AI provider with default open-source model
+ai_provider = AIProvider()
 
 # Configure SSL context based on environment
 def create_ssl_context():
@@ -28,8 +32,6 @@ def create_ssl_context():
             )
         return context
 
-# ... keep existing code (transformer model and other class definitions)
-
 @app.route('/generate_idea', methods=['POST'])
 def generate_idea():
     try:
@@ -39,15 +41,25 @@ def generate_idea():
         if not user_input:
             return jsonify({'error': 'Invalid input'}), 400
 
-        initial_response = transformer_model.generate_response(user_input)
-        agi_response = agi_system.reason(initial_response)
-        hive_response = hive_mind.enhance_response(agi_response)
-        quantum_optimized = quantum_assistant.optimize(hive_response)
+        # Generate response using the AI provider
+        response = ai_provider.generate_response(user_input)
         
-        return jsonify({'response': quantum_optimized}), 200
+        return jsonify({'response': response}), 200
     except Exception as e:
         app.logger.error(f"Error in generate_idea: {str(e)}")
         return jsonify({'error': 'An internal error occurred'}), 500
+
+@app.route('/configure_ai', methods=['POST'])
+def configure_ai():
+    try:
+        data = request.get_json()
+        provider = data.get('provider', '')
+        api_key = data.get('api_key', '')
+        
+        ai_provider.set_custom_provider(provider, api_key)
+        return jsonify({'message': 'AI provider configured successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': f'Failed to configure AI provider: {str(e)}'}), 500
 
 @app.route('/status', methods=['GET'])
 def status():
