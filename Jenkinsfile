@@ -15,8 +15,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install Node.js and Python dependencies
-                    sh 'npm install'
+                    // Clear npm cache and install dependencies with exact versions
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps'
                     sh 'pip install -r requirements.txt'
                 }
             }

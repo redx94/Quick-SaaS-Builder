@@ -1,8 +1,3 @@
-# assistant_api.py
-# Author: Reece Dixon
-# Copyright (c) 2024 Reece Dixon. All Rights Reserved.
-# Path: Quick-SaaS-Builder-main/backend/assistant_api.py
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ssl
@@ -10,38 +5,32 @@ import certifi
 import requests
 from urllib3.exceptions import InsecureRequestWarning
 import os
+from src.modules.ai_provider import AIProvider
 
 # Suppress only the single InsecureRequestWarning in development
-if os.environ.get('FLASK_ENV') == 'development':
-    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
-# Configure requests session based on environment
-session = requests.Session()
-if os.environ.get('FLASK_ENV') == 'development':
-    session.verify = False
-else:
-    session.verify = certifi.where()
+# Initialize the AI provider with default open-source model
+ai_provider = AIProvider()
 
-class AdvancedTransformerModel:
-    def __init__(self):
-        self.model_cache = LRUCache(maxsize=1)
-
-    @cached(cache=lambda self: self.model_cache)
-    def load_model(self):
-        # Placeholder for model loading
-        return None
-
-    def generate_response(self, input_text, max_length=300):
-        # Placeholder for response generation
-        return f"Generated response for: {input_text}"
-
-transformer_model = AdvancedTransformerModel()
-agi_system = TrueAGI(memory_size=1024, reasoning_depth=5)
-hive_mind = HiveMind(learning_rate=0.05, mutation_rate=0.1)
-quantum_assistant = QuantumAssistant()
+# Configure SSL context based on environment
+def create_ssl_context():
+    if os.environ.get('FLASK_ENV') == 'development':
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        return context
+    else:
+        context = ssl.create_default_context(cafile=certifi.where())
+        if os.environ.get('SSL_CERT_PATH') and os.environ.get('SSL_KEY_PATH'):
+            context.load_cert_chain(
+                os.environ.get('SSL_CERT_PATH'),
+                os.environ.get('SSL_KEY_PATH')
+            )
+        return context
 
 @app.route('/generate_idea', methods=['POST'])
 def generate_idea():
@@ -52,34 +41,35 @@ def generate_idea():
         if not user_input:
             return jsonify({'error': 'Invalid input'}), 400
 
-        initial_response = transformer_model.generate_response(user_input)
-        agi_response = agi_system.reason(initial_response)
-        hive_response = hive_mind.enhance_response(agi_response)
-        quantum_optimized = quantum_assistant.optimize(hive_response)
+        # Generate response using the AI provider
+        response = ai_provider.generate_response(user_input)
         
-        return jsonify({'response': quantum_optimized}), 200
+        return jsonify({'response': response}), 200
     except Exception as e:
         app.logger.error(f"Error in generate_idea: {str(e)}")
         return jsonify({'error': 'An internal error occurred'}), 500
+
+@app.route('/configure_ai', methods=['POST'])
+def configure_ai():
+    try:
+        data = request.get_json()
+        provider = data.get('provider', '')
+        api_key = data.get('api_key', '')
+        
+        ai_provider.set_custom_provider(provider, api_key)
+        return jsonify({'message': 'AI provider configured successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': f'Failed to configure AI provider: {str(e)}'}), 500
 
 @app.route('/status', methods=['GET'])
 def status():
     return jsonify({'status': 'online'}), 200
 
 if __name__ == '__main__':
-    # Configure SSL context based on environment
+    ssl_context = create_ssl_context()
+    port = int(os.environ.get('PORT', 5000))
+    
     if os.environ.get('FLASK_ENV') == 'development':
-        ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
-        app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context, debug=True)
+        app.run(host='0.0.0.0', port=port, debug=True, ssl_context=None)
     else:
-        # Production: Load SSL certificates
-        try:
-            ssl_context = ssl.create_default_context()
-            ssl_context.load_cert_chain(certfile='/etc/ssl/certs/cert.pem', keyfile='/etc/ssl/private/key.pem')
-            ssl_context.load_verify_locations(cafile='/etc/ssl/certs/ca.pem')  # Add CA certificate
-            app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
-        except Exception as e:
-            app.logger.error(f"Error loading SSL certificates: {str(e)}")
-            exit(1)  # Exit if there's an error loading certificates
+        app.run(host='0.0.0.0', port=port, ssl_context=ssl_context)

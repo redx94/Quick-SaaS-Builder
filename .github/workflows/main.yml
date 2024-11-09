@@ -50,6 +50,7 @@ jobs:
         python -m pytest tests/
         npm test
 
+<<<<<<< HEAD
     - name: Build
       run: |
         npm run build
@@ -60,3 +61,76 @@ jobs:
         name: build-output
         path: dist
         retention-days: 5
+=======
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+
+      - name: Install npm@latest
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: |
+          npm cache clean --force
+          npm install
+        env:
+          CI: true
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
+
+      - name: Build project
+        run: npm run build
+        env:
+          CI: true
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip ca-certificates openssl
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install --upgrade qiskit
+          # Generate self-signed certificates for testing
+          sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+          sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout /etc/ssl/private/key.pem \
+            -out /etc/ssl/certs/cert.pem \
+            -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
+          sudo chmod 644 /etc/ssl/certs/cert.pem
+          sudo chmod 600 /etc/ssl/private/key.pem
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run Python tests
+        env:
+          FLASK_ENV: development
+          SSL_KEY_PATH: /etc/ssl/private/key.pem
+          SSL_CERT_PATH: /etc/ssl/certs/cert.pem
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'  # Only for CI environment
+        run: python -m unittest discover test
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: docker build -t my-image .
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: docker push my-image
+
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+>>>>>>> 434ca428807c09f2bd1d55b6b016d6f2cf34d439
