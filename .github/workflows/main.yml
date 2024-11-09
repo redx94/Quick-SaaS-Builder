@@ -1,76 +1,62 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org'
+        
+    - name: Configure SSL Certificates
+      run: |
+        # Update CA certificates
+        sudo apt-get update
+        sudo apt-get install -y ca-certificates
+        sudo update-ca-certificates
+        # Configure npm to use secure connection
+        npm config set registry https://registry.npmjs.org/
+        npm config set strict-ssl true
+        # Configure pip to use secure connection
+        python -m pip install --upgrade pip
+        pip install certifi
+        
+    - name: Install dependencies
+      run: |
+        # Install Python dependencies with proper SSL verification
+        pip install -r requirements.txt
+        # Install Node.js dependencies with proper SSL verification
+        npm config set registry https://registry.npmjs.org/
+        npm ci
+        
+    - name: Run tests
+      run: |
+        python -m pytest tests/
+        npm test
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.x'
-
-      - name: Install npm@latest
-        run: npm install -g npm@latest
-
-      - name: Install dependencies
-        run: |
-          npm cache clean --force
-          npm install
-        env:
-          CI: true
-
-      - name: Build project
-        run: npm run build
-        env:
-          CI: true
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - name: Install Python dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip ca-certificates
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install --upgrade qiskit
-
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
-
-      - name: Run Python tests
-        env:
-          REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
-        run: python -m unittest discover test
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build Docker image
-        run: docker build -t my-image .
-
-      - name: Log in to Docker Hub
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Push Docker image
-        run: docker push my-image
-
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
+    - name: Build
+      run: |
+        npm run build
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-output
+        path: dist
+        retention-days: 5
