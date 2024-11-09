@@ -1,3 +1,8 @@
+# assistant_api.py
+# Author: Reece Dixon
+# Copyright (c) 2024 Reece Dixon. All Rights Reserved.
+# Path: Quick-SaaS-Builder-main/backend/assistant_api.py
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ssl
@@ -7,23 +12,18 @@ from urllib3.exceptions import InsecureRequestWarning
 import os
 
 # Suppress only the single InsecureRequestWarning in development
-requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+if os.environ.get('FLASK_ENV') == 'development':
+    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Configure SSL context based on environment
-def create_ssl_context():
-    if os.environ.get('FLASK_ENV') == 'development':
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-        return context
-    else:
-        context = ssl.create_default_context()
-        context.verify_mode = ssl.CERT_REQUIRED
-        context.load_verify_locations(cafile=certifi.where())
-        return context
+# Configure requests session based on environment
+session = requests.Session()
+if os.environ.get('FLASK_ENV') == 'development':
+    session.verify = False
+else:
+    session.verify = certifi.where()
 
 class AdvancedTransformerModel:
     def __init__(self):
@@ -67,10 +67,19 @@ def status():
     return jsonify({'status': 'online'}), 200
 
 if __name__ == '__main__':
-    ssl_context = create_ssl_context()
-    port = int(os.environ.get('PORT', 5000))
-    
+    # Configure SSL context based on environment
     if os.environ.get('FLASK_ENV') == 'development':
-        app.run(host='0.0.0.0', port=port, debug=True)
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context, debug=True)
     else:
-        app.run(host='0.0.0.0', port=port, ssl_context=ssl_context)
+        # Production: Load SSL certificates
+        try:
+            ssl_context = ssl.create_default_context()
+            ssl_context.load_cert_chain(certfile='/etc/ssl/certs/cert.pem', keyfile='/etc/ssl/private/key.pem')
+            ssl_context.load_verify_locations(cafile='/etc/ssl/certs/ca.pem')  # Add CA certificate
+            app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
+        except Exception as e:
+            app.logger.error(f"Error loading SSL certificates: {str(e)}")
+            exit(1)  # Exit if there's an error loading certificates
