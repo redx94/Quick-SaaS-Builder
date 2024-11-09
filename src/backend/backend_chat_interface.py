@@ -18,18 +18,13 @@ if os.environ.get('FLASK_ENV') == 'development':
 dashboard_app = Flask(__name__)
 CORS(dashboard_app)
 
-# Configure requests session based on environment
-session = requests.Session()
-if os.environ.get('FLASK_ENV') == 'development':
-    session.verify = False
-
 def run_assistant_api():
     subprocess.run(['python', 'src/backend/assistant_api.py'])
 
 @dashboard_app.route('/status', methods=['GET'])
 def get_status():
     try:
-        response = session.get('http://127.0.0.1:5000/status')
+        response = requests.get('http://127.0.0.1:5000/status')
         return jsonify({'backend_status': response.json()}), 200
     except Exception as e:
         return jsonify({'backend_status': 'offline', 'error': str(e)}), 500
@@ -40,5 +35,5 @@ def start_backend():
     return jsonify({'message': 'Backend server started'}), 200
 
 if __name__ == '__main__':
-    os.environ['FLASK_ENV'] = 'development'  # Set development environment
+    os.environ['FLASK_ENV'] = 'development'
     dashboard_app.run(host='127.0.0.1', port=5001, debug=True)
