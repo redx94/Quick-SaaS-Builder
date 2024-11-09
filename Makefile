@@ -17,7 +17,6 @@ start:
 # Install target
 install:
 	npm install
-	pip install -r requirements.txt
 
 # Open app target
 open:

@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    container_name: quick-saas-backend
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@db:5432/mydb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src:/app/src
+      - ssl-certs:/etc/ssl:ro
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quick-saas-nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ssl-certs:/etc/ssl:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:13
+    container_name: quick-saas-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  ssl-certs:
+  postgres_data:
