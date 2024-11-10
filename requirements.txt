@@ -1,28 +1,26 @@
 # Core Packages
-flask==2.2.5
-flask-cors==4.0.2
-requests==2.32.2
-numpy==1.24.3
-cachetools==5.3.0
-certifi==2024.7.4
-urllib3==2.2.2
+flask==3.0.2
+flask-cors==4.0.0
+requests==2.31.0
+numpy==1.26.4
+cachetools==5.3.2
+certifi==2024.2.2
+urllib3==2.2.1
 
 # AI and NLP Packages
 torch==2.2.0
-transformers==4.38.0
+transformers==4.38.1
+openai==1.12.0
 sentence-transformers==2.5.1
-
-# Quantum Computing Integration
-qiskit==0.44.2
-qiskit-aer
-
-# Advanced Distributed System Packages
-ray[serve]==2.10.0
-phe==1.5.0
 
 # Testing Dependencies
 parameterized==0.9.0
 
 # Other Dependencies
-psutil==5.9.5
-concurrent-log-handler==0.9.25
+psutil==5.9.8
+python-dotenv==1.0.1
+
+# Development Dependencies
+black==24.2.0
+pylint==3.0.3
+pytest==8.0.

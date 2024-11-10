@@ -1,14 +1,19 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 import autoprefixer from 'autoprefixer';
-import postcssNested from 'postcss-nested'; // Static import
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      include: "**/*.{jsx,tsx}",
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['@emotion/babel-plugin']
+      }
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
@@ -21,16 +26,6 @@ export default defineConfig({
             src: '/favicon.ico',
             sizes: '64x64 32x32 24x24 16x16',
             type: 'image/x-icon'
-          },
-          {
-            src: '/android-chrome-192x192.png',
-            type: 'image/png',
-            sizes: '192x192'
-          },
-          {
-            src: '/android-chrome-512x512.png',
-            type: 'image/png',
-            sizes: '512x512'
           }
         ]
       }
@@ -39,45 +34,56 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'lib': path.resolve(__dirname, 'lib'),
+      'lib': path.resolve(__dirname, './src/lib'),
       'components': path.resolve(__dirname, './src/components')
-    }
+    },
+    extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']
   },
   server: {
-    host: '::',
+    host: true,
     port: 3000,
+    strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    minify: 'terser',
     sourcemap: true,
+    minify: 'terser',
+    target: 'esnext',
     rollupOptions: {
-      external: ['html-to-image'],
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/')[1].split('/')[0].toString();
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-scroll-area', '@radix-ui/react-tooltip']
         }
       }
     }
   },
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   },
   css: {
     postcss: {
       plugins: [
-        autoprefixer,
-        postcssNested // Updated import usage
+        autoprefixer()
       ]
+    },
+    modules: {
+      localsConvention: 'camelCase'
     }
   },
   optimizeDeps: {
-    entries: ['src/main.js'],
-    exclude: ['some-big-package'],
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', '@emotion/react', '@emotion/styled'],
+    exclude: ['@radix-ui/react-scroll-area', '@radix-ui/react-tooltip']
+  },
+  esbuild: {
+    jsxInject: `import React from 'react'`
   }
 });
