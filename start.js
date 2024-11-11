@@ -1,33 +1,52 @@
-// Description: This file is used to start the backend and frontend servers concurrently.
-/**
- * @file start.js
- * @description This file is used to start the backend and frontend servers concurrently.
- * @author Reece Dixon
- * @copyright  2024 Reece Dixon
- */
-
-const { spawn } = require('child_process');
+const https = require('https');
+const fs = require('fs');
+const express = require('express');
 const path = require('path');
 
-// Start the backend chat interface
-const backendChatInterface = spawn('python', [path.join(__dirname, 'src', 'backend', 'backend_chat_interface.py')], {
-  stdio: 'inherit',
-});
+const app = express();
 
-// Start the assistant API
-const assistantAPI = spawn('python', [path.join(__dirname, 'src', 'backend', 'assistant_api.py')], {
-  stdio: 'inherit',
-});
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Start the frontend development server
-const frontend = spawn('npm', ['run', 'dev'], {
-  stdio: 'inherit',
-});
+// SSL configuration based on environment
+const getSSLOptions = () => {
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      return {
+        key: fs.readFileSync(process.env.SSL_KEY_PATH || '/etc/ssl/private/key.pem'),
+        cert: fs.readFileSync(process.env.SSL_CERT_PATH || '/etc/ssl/certs/cert.pem'),
+        ca: process.env.SSL_CA_PATH ? fs.readFileSync(process.env.SSL_CA_PATH) : undefined,
+        rejectUnauthorized: false // Allow self-signed certificates in production for now
+      };
+    } catch (error) {
+      console.error('Error loading SSL certificates:', error);
+      process.exit(1);
+    }
+  } else {
+    // Development: Generate self-signed certificates on the fly
+    const selfsigned = require('selfsigned');
+    const attrs = [{ name: 'commonName', value: 'localhost' }];
+    const pems = selfsigned.generate(attrs, { days: 365 });
+    
+    return {
+      key: pems.private,
+      cert: pems.cert,
+      rejectUnauthorized: false
+    };
+  }
+};
 
-// Handle process termination
-process.on('SIGINT', () => {
-  backendChatInterface.kill();
-  assistantAPI.kill();
-  frontend.kill();
-  process.exit();
-});
+// Setup server based on environment
+const PORT = process.env.PORT || 3000;
+
+if (process.env.NODE_ENV === 'production') {
+  const options = getSSLOptions();
+  https.createServer(options, app).listen(PORT, () => {
+    console.log(`Server running with HTTPS on port ${PORT}`);
+  });
+} else {
+  // Development: Allow HTTP
+  app.listen(PORT, () => {
+    console.log(`Server running with HTTP on port ${PORT}`);
+  });
+}

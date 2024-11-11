@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2024 
+ *   All rights reserved.
+ */
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },

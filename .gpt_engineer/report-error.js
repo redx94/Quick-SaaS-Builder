@@ -20,65 +20,38 @@ export const loadReportErrorEventListener = (() => {
         return true;
       }
       reportedErrors.add(errorId);
-      // Optionally, clear the set after some time to prevent it from growing indefinitely
       setTimeout(() => reportedErrors.delete(errorId), 5000);
       return false;
     };
 
     const reportError = (event) => {
       const errorId = generateErrorId(event);
-
-      // Prevent error being reported multiple times
       if (isErrorAlreadyReported(errorId)) {
         return;
       }
-
       const error = extractError(event);
-
       console.log("GOTERR EVENT", event);
       console.log("GOTERR ", error);
-
-      window.top.postMessage(
-        { type: "RUNTIME_ERROR", error },
-        "https://run.gptengineer.app"
-      );
-      window.top.postMessage(
-        { type: "RUNTIME_ERROR", error },
-        "http://localhost:3000"
-      );
+      window.top.postMessage({ type: "RUNTIME_ERROR", error }, "https://run.gptengineer.app");
+      window.top.postMessage({ type: "RUNTIME_ERROR", error }, "http://localhost:3000");
     };
 
-    // Listen to runtime errors and report them to the parent window
     window.addEventListener("error", reportError);
-
-    // Listen to unhandled promise rejections
     window.addEventListener("unhandledrejection", (event) => {
-      const errorId =
-        event.reason?.stack || event.reason?.message || String(event.reason);
-
-      // Prevent error being reported multiple times
+      const errorId = event.reason?.stack || event.reason?.message || String(event.reason);
       if (isErrorAlreadyReported(errorId)) {
         return;
       }
-
-      const error = {
-        message: event.reason?.message || "Unhandled promise rejection",
-        stack: event.reason?.stack || String(event.reason),
-      };
-
+      const error = { message: event.reason?.message || "Unhandled promise rejection", stack: event.reason?.stack || String(event.reason) };
       console.log("GOT UNHANDLED PROMISE REJECTION", event);
       console.log("GOT UNHANDLED PROMISE REJECTION ", error);
-
-      window.top.postMessage(
-        { type: "RUNTIME_ERROR", error },
-        "https://run.gptengineer.app"
-      );
-      window.top.postMessage(
-        { type: "RUNTIME_ERROR", error },
-        "http://localhost:3000"
-      );
+      window.top.postMessage({ type: "RUNTIME_ERROR", error }, "https://run.gptengineer.app");
+      window.top.postMessage({ type: "RUNTIME_ERROR", error }, "http://localhost:3000");
     });
 
     isInitialized = true;
   };
 })();
+
+// Next-Level Enhancements:
+// 1. Integrate with a cloud-based error tracking service like Sentry.
