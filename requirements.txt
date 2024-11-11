@@ -1,5 +1,5 @@
 # Core Packages
-flask==2.2.5
+flask==3.0.3
 Flask-Cors>=4.0.2
 requests==2.32.2
 numpy==1.26.4
