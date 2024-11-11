@@ -17,10 +17,19 @@ start:
 # Install target
 install:
 	npm install
+	pip install -r requirements.txt
+
+# Build target
+build:
+	npm run build
+
+# Build dev target
+build-dev:
+	$(NODE) scripts/build.js
 
 # Open app target
 open:
 	open http://localhost:3000
 
 # Default target
-all: install start open
+all: install build-dev start open

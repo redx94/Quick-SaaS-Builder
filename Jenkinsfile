@@ -4,6 +4,7 @@ pipeline {
         NODE_HOME = '/usr/local/bin/node'
         NPM_PATH = "${NODE_HOME}/bin"
         VERCEL_TOKEN = credentials('vercel_token')
+        NODE_TLS_REJECT_UNAUTHORIZED = '0' // Only for development purposes, not for production
     }
     stages {
         stage('Checkout') {
@@ -14,8 +15,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install Node.js and Python dependencies
-                    sh 'npm install'
+                    // Clear npm cache and install dependencies with exact versions
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps'
                     sh 'pip install -r requirements.txt'
                 }
             }
