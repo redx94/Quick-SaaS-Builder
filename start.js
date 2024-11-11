@@ -16,7 +16,7 @@ const getSSLOptions = () => {
         key: fs.readFileSync(process.env.SSL_KEY_PATH || '/etc/ssl/private/key.pem'),
         cert: fs.readFileSync(process.env.SSL_CERT_PATH || '/etc/ssl/certs/cert.pem'),
         ca: process.env.SSL_CA_PATH ? fs.readFileSync(process.env.SSL_CA_PATH) : undefined,
-        rejectUnauthorized: false // Allow self-signed certificates in production for now
+        rejectUnauthorized: true // Enforce certificate validation in production
       };
     } catch (error) {
       console.error('Error loading SSL certificates:', error);
@@ -31,7 +31,7 @@ const getSSLOptions = () => {
     return {
       key: pems.private,
       cert: pems.cert,
-      rejectUnauthorized: false
+      rejectUnauthorized: false // Allow self-signed certificates in development
     };
   }
 };
