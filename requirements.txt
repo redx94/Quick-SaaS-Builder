@@ -4,7 +4,7 @@ flask-cors==4.0.0
 requests==2.31.0
 numpy==1.26.4
 cachetools==5.3.2
-certifi==2024.2.2
+certifi==2024.7.4
 urllib3==2.2.1
 
 # AI and NLP Packages
