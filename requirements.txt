@@ -20,6 +20,6 @@ psutil==5.9.8
 python-dotenv==1.0.1
 
 # Development Dependencies
-black==24.2.0
+black==24.3.0
 pylint==3.0.3
 pytest==8.0.0
