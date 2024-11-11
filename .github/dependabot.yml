@@ -1,0 +1,17 @@
+# dependabot.yml
+
+version: 2
+updates:
+  # JavaScript/TypeScript dependencies
+  - package-ecosystem: "npm"
+    directory: "/" # Root directory, adjust if package.json is in a subdirectory
+    schedule:
+      interval: "weekly" # Set to "weekly" for regular updates
+    open-pull-requests-limit: 10
+
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/" # Root directory, adjust if requirements.txt is in a subdirectory
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
