@@ -10,7 +10,6 @@ urllib3==2.2.1
 # AI and NLP Packages
 torch==2.2.0
 transformers==4.38.1
-openai==1.12.0
 sentence-transformers==2.5.1
 
 # Testing Dependencies
@@ -23,4 +22,4 @@ python-dotenv==1.0.1
 # Development Dependencies
 black==24.2.0
 pylint==3.0.3
-pytest==8.0.
+pytest==8.0.0

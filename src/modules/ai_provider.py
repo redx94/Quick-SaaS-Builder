@@ -1,8 +1,6 @@
 from typing import Optional, Dict, Any
 import os
-from transformers import pipeline
-import openai
-from openai import OpenAI
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 
 class AIProvider:
     def __init__(self):
@@ -15,17 +13,17 @@ class AIProvider:
         """Initialize the default open-source model (Mistral-7B)"""
         try:
             self.model = pipeline(
-                "text-generation",
-                model="mistralai/Mistral-7B-Instruct-v0.1",
+                "text2text-generation",
+                model="google/flan-t5-small",
                 device="cpu"
             )
-            print("Successfully loaded default AI model (Mistral-7B)")
+            print("Successfully loaded default AI model (FLAN-T5)")
         except Exception as e:
             print(f"Error loading default model: {str(e)}")
-            # Fallback to smaller model if Mistral fails
+            # Fallback to smaller model if FLAN-T5 fails
             try:
                 self.model = pipeline(
-                    "text-generation",
+                    "text2text-generation",
                     model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
                     device="cpu"
                 )
@@ -40,7 +38,7 @@ class AIProvider:
             if self.provider == "openai":
                 return self._generate_openai_response(prompt)
             
-            # Default model (Mistral or TinyLlama)
+            # Default model (FLAN-T5 or TinyLlama)
             response = self.model(
                 prompt,
                 max_length=max_length,
