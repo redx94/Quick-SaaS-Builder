@@ -26,3 +26,5 @@ eggs/
 *.sw?
 venv-qsb
 /pyvenv.cfg
+.venv/
+frontend/.venv/
