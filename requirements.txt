@@ -8,7 +8,7 @@ certifi==2024.8.30
 urllib3==2.2.3
 
 # AI and NLP Packages
-torch==2.2.0
+torch==2.5.1
 transformers==4.38.1
 ray[serve]==2.39.0
 numpy==1.22.0
