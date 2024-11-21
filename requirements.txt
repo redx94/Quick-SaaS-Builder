@@ -15,7 +15,7 @@ numpy==1.22.0
 qiskit==1.2.4
 psutil==5.9.8
 cachetools==4.2.2
-hivemind==1.0.0
+hivemind==1.1.10.post2
 trueagi==0.1.0
 quantum-assistant==0.2.0
 distributed-optimizer==0.3.0
