@@ -1,0 +1,5 @@
+{
+    "api_key": "YOUR_LEPTON_AI_API_KEY",
+    "api_secret": "YOUR_LEPTON_AI_API_SECRET",
+    "endpoint": "https://api.lepton.ai/v1"
+}
