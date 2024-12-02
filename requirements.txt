@@ -30,4 +30,4 @@ python-dotenv==1.0.1
 # Development Dependencies
 black==24.3.0
 pylint==3.0.3
-pytest==8.0.0
+pytest==8.3.4
