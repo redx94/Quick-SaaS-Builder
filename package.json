@@ -12,5 +12,8 @@
   },
   "workspaces": [
     "frontend"
-  ]
+  ],
+  "dependencies": {
+    "lovable-tagger": "^1.0.19"
+  }
 }
