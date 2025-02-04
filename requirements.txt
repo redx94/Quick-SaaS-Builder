@@ -14,7 +14,7 @@ ray[serve]==2.39.0
 numpy==1.22.0
 qiskit==1.2.4
 psutil==5.9.8
-cachetools==4.2.2
+cachetools==5.5.1
 hivemind==1.0.0
 trueagi==0.1.0
 quantum-assistant==0.2.0
